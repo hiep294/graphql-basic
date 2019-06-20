@@ -1,0 +1,72 @@
+reference:
+* The Modern GraphQL Bootcamp (with Node.js and Apollo) - udemy.com - Andrew Mead
+* GraphQL - youtube - Traversy Media
+
+typeDefs is just the interface of a graph query
+when return any data of db, there needs to work with key and value which are defined in db 
+
+query type => main type
+other types => consider as custom models
+strict type (needs to follow exactly key): Int, String, Float,
+
+type Mutation{
+    createUser(name: String!, email: String!, age: Int!): User!
+  }
+  => maybe, get some arguments then return a user
+
+"The some() method tests whether at least one element in the array passes the test implemented by the provided function. It returns a Boolean value."
+
+key `input` is a type that defines type for arguments
+=> more organize code
+
+Mutation is just for optional choice alter Query in update, create, delete. Actually, there can do all operations (CRUD) in Query
+
+const server = new GraphQLServer({
+  typeDefs: './src/schema.graphql', // <=====
+  resolvers
+})
+
+context will pass as the third argument in resolvers, client argument will be set in the second argument, parent as the first
+context often include database
+
+age, title, body and published can be undefined. so there needs to check it before updating
+
+subscription: make the app in realtime, when a user create a comment, it can update the comment in client
+1. run subscription
+2. create comment, the comment will update all client
++ pubsub.publish(`comment ${args.data.postId}`, { comment })
+=> this line is in the mutation, that will publish a channel `comment ${args.data.postId}` with value `comment`
++pubsub.asyncIterator(`comment ${postId}`) 
+=> will call again
+
+setInterval(cb, time): will do cb() after `time`
+
+-- PubSub of graphql-yoga researching
+
+subscription is used when the author has made changed, that will send changed info to other clients relevant
+
+const [comment] = db.comments.splice(commentIndex, 1)
+=> destructure array of splice to the first element as `comment`
+
+enum: define types
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+// JS functions ---------------------------//
+array.findIndex(cb) 
+=> find the first index of the element of array which satisfies condition in cb
+cb = (element, index, array) => {} 
+
+array.splice()
+=> can be used for delete, replace, it will return back an array of removed objects
+
+array.some()
+
+// experience
+if delete an object of an array, should use findIndex() and splice() (if check exist object)
+ or use filter() (for faster solution but not check the object exists or not)
+
+if check exist, there can use some or find
